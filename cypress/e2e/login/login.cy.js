@@ -1,21 +1,42 @@
 describe('Login', () => {
+	const username = Cypress.env('EMAIL') || 'user@example.com';
+	const password = Cypress.env('PASSWORD') || 'password';
+
+	const loginPage = {
+		visit() {
+			cy.visit('/login');
+		},
+		enterEmail(email) {
+			cy.get('input[type="email"]').type(email);
+		},
+		enterPassword(password) {
+			cy.get('input[type="password"]').type(password);
+		},
+		submit() {
+			cy.get('button[type="submit"]').click();
+		},
+		assertErrorVisible() {
+			cy.get('[role="alert"], .error, .alert').should('be.visible');
+		}
+	};
+
 	beforeEach(() => {
-		cy.visit('/login');
+		loginPage.visit();
 	});
 
 	it('logs in with valid credentials', () => {
-		cy.get('input[type="email"]').type(Cypress.env('username') || 'user@example.com');
-		cy.get('input[type="password"]').type(Cypress.env('password') || 'password');
-		cy.get('button[type="submit"]').click();
+		loginPage.enterEmail(username);
+		loginPage.enterPassword(password);
+		loginPage.submit();
 
 		cy.url().should('not.include', '/login');
 	});
 
 	it('rejects invalid credentials', () => {
-		cy.get('input[type="email"]').type('invalid@example.com');
-		cy.get('input[type="password"]').type('invalid-password');
-		cy.get('button[type="submit"]').click();
+		loginPage.enterEmail('invalid@example.com');
+		loginPage.enterPassword('invalid-password');
+		loginPage.submit();
 
-		cy.get('[role="alert"], .error, .alert').should('be.visible');
+		loginPage.assertErrorVisible();
 	});
 });

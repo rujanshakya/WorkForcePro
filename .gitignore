@@ -4,3 +4,4 @@ cypress/videos
 cypress/downloads
 cypress/reports
 cypress.env.json
+.env

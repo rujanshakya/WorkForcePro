@@ -4,7 +4,10 @@ class EmployeePage {
 		return this;
 	}
 
-	
+	clickAddEmployee() {
+		cy.contains('button', 'Add Employee').click();
+		return this;
+	}
 
 }
 
